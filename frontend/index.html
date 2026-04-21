@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sika — Dollar Savings for Everyone</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --y:#FFC000;--ys:rgba(255,192,0,0.13);--ym:rgba(255,192,0,0.28);
+  --bk:#111;--wh:#fff;--bg:#F7F6F3;--cd:#fff;
+  --bd:#EBEBEB;--tx:#1A1A1A;--t2:#6B6B6B;--t3:#ADADAD;
+  --gn:#1C8B5E;--gs:rgba(28,139,94,0.10);--rd:#C0392B;--rs:rgba(192,57,43,0.1);
+  --fn:'Plus Jakarta Sans',system-ui,sans-serif;
+  --rsm:12px;--rmd:16px;--rlg:22px;--rxl:28px;
+  --sh:0 2px 16px rgba(0,0,0,0.07);--shl:0 8px 32px rgba(0,0,0,0.10);
+}
+html,body{height:100%;background:#CCCAC3;font-family:var(--fn);color:var(--tx);overflow:hidden;}
+.outer{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.shell{width:390px;height:844px;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative;border-radius:44px;box-shadow:0 40px 80px rgba(0,0,0,0.35),inset 0 0 0 1px rgba(255,255,255,0.15);}
+@media(max-height:880px){.shell{height:100svh;border-radius:0;max-width:390px;}}
+@media(max-width:390px){.shell{width:100vw;height:100svh;border-radius:0;}}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:14px 28px 0;font-size:13px;font-weight:700;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;}
+.sb.lt{color:#fff;}.sb.dk{color:var(--tx);}
+.screen{display:none;flex-direction:column;height:100%;position:absolute;inset:0;background:var(--bg);}
+.screen.active{display:flex;animation:si .2s cubic-bezier(.4,0,.2,1);}
+@keyframes si{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.scroll{overflow-y:auto;overflow-x:hidden;flex:1;-webkit-overflow-scrolling:touch;}
+.scroll::-webkit-scrollbar{display:none;}
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:17px;border-radius:var(--rmd);border:none;font-family:var(--fn);font-size:16px;font-weight:700;cursor:pointer;transition:all .14s;}
+.btn:active{transform:scale(0.97);}
+.btn-y{background:var(--y);color:var(--bk);}
+.btn-d{background:var(--bk);color:#fff;}
+.btn-g{background:var(--cd);color:var(--tx);border:1.5px solid var(--bd);}
+.btn-r{background:var(--rd);color:#fff;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+/* NUMPAD */
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.nk{background:var(--cd);border:none;border-radius:var(--rmd);padding:18px 8px;font-family:var(--fn);font-size:24px;font-weight:700;cursor:pointer;color:var(--tx);box-shadow:var(--sh);transition:all .1s;}
+.nk:active{background:var(--y);transform:scale(0.94);}
+.nk-sm{font-size:15px;font-weight:700;}
+/* INPUTS */
+.il{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:7px;display:block;}
+.inp{width:100%;background:var(--cd);border:2px solid var(--bd);border-radius:var(--rsm);padding:15px 16px;font-family:var(--fn);font-size:16px;font-weight:500;color:var(--tx);outline:none;transition:border-color .15s;}
+.inp:focus{border-color:var(--y);}
+.inp.fi{border-color:var(--bk);}
+.inp-pill{border-radius:50px;}
+.inp-iw{position:relative;}.inp-iw .inp{padding-left:48px;}.inp-iw .iico{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;}
+/* BOTTOM NAV */
+.bnav{background:var(--cd);border-top:1px solid var(--bd);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px 22px;flex-shrink:0;}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:5px 2px;}
+.ni{font-size:22px;line-height:1;}
+.nl{font-size:9px;font-weight:600;color:var(--t3);transition:color .15s;}
+.nb.on .nl{color:var(--tx);}
+.ndot{width:4px;height:4px;background:var(--y);border-radius:50%;margin-top:1px;display:none;}
+.nb.on .ndot{display:block;}
+/* CARDS */
+.card{background:var(--cd);border-radius:var(--rlg);padding:18px;box-shadow:var(--sh);}
+.card-y{background:var(--y);border-radius:var(--rxl);padding:22px;}
+.card-dk{background:var(--bk);border-radius:var(--rxl);padding:22px;}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:99px;font-size:11px;font-weight:600;}
+.pill-y{background:var(--ys);color:#7A5C00;}
+.pill-gn{background:var(--gs);color:var(--gn);}
+.pill-dk{background:var(--bk);color:#fff;}
+.pill-r{background:var(--rs);color:var(--rd);}
+/* TX ROWS */
+.txr{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);}
+.txr:last-child{border-bottom:none;}
+.txi{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.txi-in{background:var(--ys);}
+.txi-out{background:#F5F5F5;}
+.txi-y{background:var(--gs);}
+.txi-r{background:var(--rs);}
+.txb{flex:1;min-width:0;}
+.txn{font-size:14px;font-weight:600;}
+.txs{font-size:11px;color:var(--t3);margin-top:1px;font-family:'Courier New',monospace;}
+.txr-r{text-align:right;flex-shrink:0;}
+.txp{font-size:14px;font-weight:700;color:var(--gn);}
+.txmn{font-size:14px;font-weight:700;color:var(--tx);}
+.txt{font-size:10px;color:var(--t3);margin-top:1px;}
+/* QUICK ACTIONS */
+.qg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+.qb{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;}
+.qi{width:52px;height:52px;background:var(--cd);border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:var(--sh);transition:all .14s;}
+.qb:active .qi{background:var(--y);transform:scale(0.92);}
+.ql{font-size:10px;font-weight:600;color:var(--t2);}
+/* SECTION HDR */
+.shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;margin-top:20px;}
+.shdr:first-child{margin-top:0;}
+.slink{font-size:12px;font-weight:600;color:var(--t2);background:none;border:none;cursor:pointer;}
+/* NOTICE */
+.notice{border-radius:var(--rsm);padding:12px 14px;font-size:13px;line-height:1.55;border-left:3px solid var(--y);background:var(--ys);}
+.notice.gn{background:var(--gs);border-left-color:var(--gn);}
+.notice.rd{background:var(--rs);border-left-color:var(--rd);}
+/* AMOUNT DISPLAY */
+.ad{background:var(--cd);border-radius:var(--rlg);padding:22px 18px;text-align:center;box-shadow:var(--sh);margin-bottom:14px;}
+.ad-c{font-size:20px;font-weight:800;color:var(--t3);vertical-align:top;margin-top:5px;display:inline-block;}
+.ad-n{font-size:52px;font-weight:800;color:var(--tx);letter-spacing:-2px;line-height:1;}
+.ad-cv{font-size:13px;font-weight:500;color:var(--t2);margin-top:6px;}
+.ad-f{font-size:11px;color:var(--t3);margin-top:2px;}
+/* PROGRESS */
+.pt{background:rgba(0,0,0,0.08);border-radius:99px;height:7px;}
+.pt.lt{background:rgba(255,255,255,0.2);}
+.pf{height:100%;border-radius:99px;background:var(--y);transition:width .7s cubic-bezier(.4,0,.2,1);}
+.pf.lt{background:#fff;}
+/* PLAN CARDS */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.pc{background:var(--cd);border:2px solid var(--bd);border-radius:var(--rlg);padding:14px;cursor:pointer;transition:all .15s;}
+.pc.on{border-color:var(--y);background:rgba(255,192,0,0.04);}
+/* RULE ROWS */
+.rr{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;font-size:13px;color:var(--tx);line-height:1.55;}
+.ri{width:20px;height:20px;min-width:20px;background:var(--y);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;margin-top:2px;}
+/* SETTING ROWS */
+.sr{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--bd);}
+.sr:last-child{border-bottom:none;}
+.sr-l{font-size:14px;font-weight:600;}
+.sr-v{font-size:13px;color:var(--t2);}
+/* INNER HEAD */
+.ihead{padding:54px 22px 18px;flex-shrink:0;}
+.back{width:38px;height:38px;border-radius:50%;background:var(--cd);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;margin-bottom:14px;box-shadow:var(--sh);}
+/* PROVIDER GRID */
+.pg2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+.pb{background:var(--cd);border:2px solid var(--bd);border-radius:var(--rmd);padding:14px 6px;text-align:center;cursor:pointer;transition:all .14s;}
+.pb.on{border-color:var(--y);background:rgba(255,192,0,0.06);}
+.pbi{font-size:24px;margin-bottom:5px;}
+.pbn{font-size:10px;font-weight:700;color:var(--t2);}
+/* DEST CARDS */
+.dc{background:var(--cd);border:2px solid var(--bd);border-radius:var(--rmd);padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.dc.on{border-color:var(--y);}
+.di{width:40px;height:40px;min-width:40px;border-radius:50%;background:var(--ys);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.dn{font-size:14px;font-weight:700;}
+.ds{font-size:11px;color:var(--t3);margin-top:1px;}
+.df{margin-left:auto;font-size:11px;font-weight:700;color:var(--gn);flex-shrink:0;}
+/* PROCESSING */
+.proc{display:none;position:absolute;inset:0;z-index:500;background:var(--bk);border-radius:44px;flex-direction:column;align-items:center;justify-content:center;padding:36px 28px;}
+@media(max-height:880px){.proc{border-radius:0;}}
+.proc.show{display:flex;}
+.ps{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);width:100%;}
+.ps:last-child{border-bottom:none;}
+.pi{width:32px;height:32px;min-width:32px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:rgba(255,255,255,0.25);transition:all .3s;}
+.pi.act{background:var(--y);color:var(--bk);}
+.pi.dn{background:var(--gn);color:#fff;}
+.pl{font-size:13px;color:rgba(255,255,255,0.35);font-weight:500;transition:color .3s;}
+.pl.act,.pl.dn{color:#fff;font-weight:600;}
+/* SUCCESS */
+.suc{background:var(--bg);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 26px;text-align:center;}
+.sring{width:84px;height:84px;border-radius:50%;background:var(--y);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 20px;box-shadow:0 8px 32px rgba(255,192,0,0.35);animation:pop .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0.2);opacity:0;}to{transform:scale(1);opacity:1;}}
+.suc-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--t2);margin-bottom:5px;}
+.suc-amt{font-size:44px;font-weight:800;letter-spacing:-1.5px;color:var(--tx);margin-bottom:5px;}
+.suc-sub{font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:20px;}
+.shash{background:var(--cd);border-radius:var(--rsm);padding:12px 14px;width:100%;margin-bottom:16px;text-align:left;border:1px solid var(--bd);}
+.shl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--t3);margin-bottom:4px;}
+.shv{font-family:'Courier New',monospace;font-size:11px;color:var(--t2);word-break:break-all;line-height:1.5;}
+.xlink{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--t3);text-decoration:none;font-family:'Courier New',monospace;margin-top:4px;}
+.xlink:hover{color:var(--y);}
+/* SPLASH */
+.splash{background:var(--bk);flex:1;display:flex;flex-direction:column;padding:56px 26px 36px;}
+/* OTP */
+.otpr{display:flex;gap:10px;justify-content:center;margin:24px 0 18px;}
+.ob{width:58px;height:66px;background:var(--cd);border:2px solid var(--bd);border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;box-shadow:var(--sh);}
+.ob.fi{border-color:var(--bk);}
+.ob.cu{border-color:var(--y);}
+/* HOME BALANCE */
+.bh{background:var(--y);border-radius:var(--rxl);padding:22px;margin-bottom:18px;position:relative;overflow:hidden;}
+.bh-deco{position:absolute;right:-18px;bottom:-18px;width:130px;height:130px;border-radius:50%;background:rgba(0,0,0,0.05);}
+.bh-deco2{position:absolute;right:18px;bottom:18px;width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,0.04);}
+/* VAULT */
+.vc{background:var(--bk);border-radius:var(--rxl);padding:20px;margin-bottom:14px;}
+.ar{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.an{font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);width:55px;flex-shrink:0;}
+.at{flex:1;background:rgba(255,255,255,0.1);border-radius:99px;height:4px;}
+.af{height:100%;border-radius:99px;background:var(--y);}
+.ap{font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);width:26px;text-align:right;}
+/* MINI STATS */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.mt{background:var(--cd);border-radius:var(--rmd);padding:14px;box-shadow:var(--sh);}
+.mtl{font-size:11px;font-weight:600;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.mtv{font-size:20px;font-weight:800;color:var(--tx);}
+/* CHART */
+.cbars{display:flex;align-items:flex-end;gap:5px;height:60px;margin-bottom:5px;}
+.cb{flex:1;border-radius:3px 3px 0 0;background:var(--y);opacity:0.25;}
+.cb.hi{opacity:1;}
+.cblbl{display:flex;justify-content:space-between;font-size:9px;font-weight:600;color:var(--t3);}
+/* FEE SAVE */
+.fss{background:var(--gs);border-radius:var(--rmd);padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+/* TOAST */
+.toast{position:absolute;top:76px;left:14px;right:14px;background:var(--bk);border-radius:var(--rmd);padding:12px 14px;z-index:900;display:none;align-items:center;gap:10px;box-shadow:var(--shl);}
+.toast.show{display:flex;animation:si .2s ease;}
+/* TICKER */
+.ticker{background:var(--bk);border-top:2px solid var(--y);padding:6px 18px;display:flex;gap:14px;overflow:hidden;flex-shrink:0;border-radius:0 0 44px 44px;}
+@media(max-height:880px){.ticker{border-radius:0;}}
+.ti{display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.tl{font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);font-family:'Courier New',monospace;}
+.tv{font-size:9px;font-weight:700;color:var(--y);font-family:'Courier New',monospace;}
+/* STEP BARS */
+.steps{display:flex;gap:5px;margin-bottom:20px;}
+.stb{height:3px;flex:1;border-radius:99px;background:var(--bd);}
+.stb.on{background:var(--y);}
+/* LIVE */
+.live-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(28,139,94,0.15);border:1px solid rgba(28,139,94,0.3);border-radius:99px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--gn);}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--gn);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+/* REMITTANCE */
+.remi-card{background:var(--bk);border-radius:var(--rlg);padding:18px;margin-bottom:12px;}
+/* COMPARE */
+.cmp-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-ico{width:36px;height:36px;min-width:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:10px;}
+.cmp-body{flex:1;}
+.cmp-name{font-size:13px;font-weight:600;}
+.cmp-sub{font-size:11px;color:var(--t3);margin-top:1px;}
+.cmp-right{text-align:right;}
+.cmp-rate{font-size:14px;font-weight:800;}
+/* CONTACTS */
+.ct{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer;}
+.ct:last-child{border-bottom:none;}
+.ct.on .ca{background:var(--y);color:var(--bk);}
+.ca{width:40px;height:40px;min-width:40px;border-radius:50%;background:var(--ys);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#7A5C00;transition:all .15s;}
+.cn{font-size:14px;font-weight:700;}
+.cs{font-size:11px;color:var(--t3);margin-top:1px;}
+.clast{margin-left:auto;font-size:11px;color:var(--t3);}
+/* KYC TIERS */
+.tier-row{display:flex;gap:8px;margin-bottom:14px;}
+.tier-card{flex:1;border:2px solid var(--bd);border-radius:var(--rmd);padding:12px;cursor:pointer;transition:all .15s;background:var(--cd);}
+.tier-card.on{border-color:var(--y);background:var(--ys);}
+.tier-card.active-tier{border-color:var(--gn);background:var(--gs);}
+/* NGO banner */
+.ngo-banner{background:var(--bk);border-radius:var(--rlg);padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+/* YIELD SOURCE */
+.ys-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.07);}
+.ys-row:last-child{border-bottom:none;}
+.ys-dot{width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--y);}
+</style>
+</head>
+<body>
+<div class="outer">
+<div class="shell" id="phone">
+<div class="sb dk" id="sbar"><span id="sbt">9:41</span><div style="display:flex;gap:5px;align-items:center;"><span id="xrpl-ind" title="XRPL">●</span><span>100%</span></div></div>
+
+<!-- ══ SPLASH ══ -->
+<div class="screen active" id="s-splash">
+  <div class="splash">
+    <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,192,0,0.12);border:1px solid rgba(255,192,0,0.25);border-radius:99px;padding:6px 13px;font-size:12px;font-weight:700;color:var(--y);margin-bottom:24px;">
+      <div style="width:6px;height:6px;background:var(--y);border-radius:50%;"></div> XRPL Savings Gateway
+    </div>
+    <div style="font-size:36px;font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.8px;margin-bottom:12px;">Save in dollars.<br><span style="color:var(--y);">Earn honest yield.</span><br>Beat inflation.</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:28px;">Dollar savings for the underbanked — powered by safe on-chain yield. In and out via MTN MoMo.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:32px;">
+      <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:14px;">
+        <div style="font-size:22px;font-weight:800;color:var(--y);">~4%</div>
+        <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">Net USD yield</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:14px;">
+        <div style="font-size:22px;font-weight:800;color:var(--y);">$7.79B</div>
+        <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">Ghana remittances '25</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:14px;">
+        <div style="font-size:22px;font-weight:800;color:var(--y);">26.7M</div>
+        <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">MoMo accounts</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:14px;">
+        <div style="font-size:22px;font-weight:800;color:var(--y);">~9%</div>
+        <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;">avg remittance fee</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:auto;">
+      <button class="btn btn-y" onclick="go('s-ob1')">Open an account →</button>
+      <button class="btn" style="background:transparent;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.15);" onclick="go('s-quick-login')">I already have an account</button>
+    </div>
+    <div style="text-align:center;margin-top:14px;font-size:10px;color:rgba(255,255,255,0.2);line-height:1.6;">Ghana VASP Act 2025 · SEC Sandbox Cohort 2 · XRPL Testnet</div>
+  </div>
+</div>
+
+<!-- ══ QUICK LOGIN ══ -->
+<div class="screen" id="s-quick-login" style="background:var(--bk);">
+  <div class="scroll" style="padding-top:66px;">
+    <div style="padding:0 24px 36px;min-height:100%;display:flex;flex-direction:column;">
+      <button class="back" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12);color:#fff;" onclick="go('s-splash')">←</button>
+      <div style="margin-bottom:32px;">
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:5px;">Welcome back 👋</div>
+        <div style="font-size:28px;font-weight:800;color:#fff;line-height:1.2;">Enter your phone<br>number to continue</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="il" style="color:rgba(255,255,255,0.5);">Mobile number</label>
+        <div class="inp-iw"><span class="iico">🇬🇭</span><input class="inp inp-pill" id="login-phone" type="tel" placeholder="+233 XX XXX XXXX" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12);color:#fff;"></div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <label class="il" style="color:rgba(255,255,255,0.5);">PIN</label>
+        <input class="inp inp-pill" type="password" placeholder="••••" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12);color:#fff;">
+      </div>
+      <div id="login-err" style="display:none;font-size:13px;color:rgba(255,100,100,0.8);margin-bottom:12px;text-align:center;"></div>
+      <button class="btn btn-y" onclick="doLogin()">Sign in →</button>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:rgba(255,255,255,0.3);">Demo: use +233241234567 or any registered number</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ OB1 PHONE ══ -->
+<div class="screen" id="s-ob1">
+  <div class="scroll" style="padding-top:60px;">
+    <div style="padding:0 22px 36px;">
+      <button class="back" onclick="go('s-splash')">←</button>
+      <div class="steps"><div class="stb on"></div><div class="stb"></div><div class="stb"></div><div class="stb"></div></div>
+      <div style="font-size:28px;font-weight:800;line-height:1.15;margin-bottom:8px;">Your phone<br>is your wallet. 📱</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:22px;line-height:1.55;">No bank account needed. Just your mobile number and MTN MoMo.</div>
+      <div class="notice" style="margin-bottom:20px;">Under <b>GHS 1,000/day</b> — phone number only. No ID or paperwork needed.</div>
+      <div style="margin-bottom:14px;">
+        <label class="il">Mobile number</label>
+        <div class="inp-iw"><span class="iico">🇬🇭</span><input class="inp inp-pill fi" id="ob-phone" type="tel" placeholder="+233 XX XXX XXXX"></div>
+      </div>
+      <div style="margin-bottom:22px;"><label class="il">Network</label>
+        <div class="pg2" id="pg-ob">
+          <div class="pb on" onclick="selP(this,'pg-ob')"><div class="pbi">📱</div><div class="pbn">MTN MoMo</div></div>
+          <div class="pb" onclick="selP(this,'pg-ob')"><div class="pbi">📶</div><div class="pbn">Vodafone</div></div>
+          <div class="pb" onclick="selP(this,'pg-ob')"><div class="pbi">🔴</div><div class="pbn">AirtelTigo</div></div>
+        </div>
+      </div>
+      <button class="btn btn-y" onclick="obNext1()">Send me a code →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ OB2 OTP ══ -->
+<div class="screen" id="s-ob2">
+  <div class="scroll" style="padding-top:60px;">
+    <div style="padding:0 22px 36px;">
+      <button class="back" onclick="go('s-ob1')">←</button>
+      <div class="steps"><div class="stb on"></div><div class="stb on"></div><div class="stb"></div><div class="stb"></div></div>
+      <div style="font-size:28px;font-weight:800;line-height:1.15;margin-bottom:8px;">Check your<br>messages. 💬</div>
+      <div style="font-size:14px;color:var(--t2);line-height:1.55;">Code sent to <span id="ob-phone-show">+233 24 …</span></div>
+      <div class="otpr"><div class="ob fi">4</div><div class="ob fi">8</div><div class="ob fi">2</div><div class="ob cu">_</div></div>
+      <div style="text-align:center;font-size:12px;color:var(--t3);margin-bottom:18px;">Tap any number to continue (demo)</div>
+      <div class="numpad" style="margin-bottom:14px;">
+        <button class="nk" onclick="otpK()">1</button><button class="nk" onclick="otpK()">2</button><button class="nk" onclick="otpK()">3</button>
+        <button class="nk" onclick="otpK()">4</button><button class="nk" onclick="otpK()">5</button><button class="nk" onclick="otpK()">6</button>
+        <button class="nk" onclick="otpK()">7</button><button class="nk" onclick="otpK()">8</button><button class="nk" onclick="otpK()">9</button>
+        <button class="nk nk-sm">Resend</button><button class="nk" onclick="otpK()">0</button><button class="nk nk-sm" onclick="go('s-ob3')">→</button>
+      </div>
+      <button class="btn btn-y" onclick="go('s-ob3')">Verify →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ OB3 NAME + PIN ══ -->
+<div class="screen" id="s-ob3">
+  <div class="scroll" style="padding-top:60px;">
+    <div style="padding:0 22px 36px;">
+      <button class="back" onclick="go('s-ob2')">←</button>
+      <div class="steps"><div class="stb on"></div><div class="stb on"></div><div class="stb on"></div><div class="stb"></div></div>
+      <div style="font-size:28px;font-weight:800;line-height:1.15;margin-bottom:8px;">Almost there! 🎉</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:22px;line-height:1.55;">Your name and a PIN to keep your account safe.</div>
+      <div style="margin-bottom:13px;"><label class="il">Your full name</label><input class="inp" id="ob-name" type="text" placeholder="e.g. Kofi Mensah" autocomplete="name"></div>
+      <div style="margin-bottom:13px;"><label class="il">Choose a 4-digit PIN</label><input class="inp" id="ob-pin" type="password" placeholder="••••" maxlength="4"></div>
+      <div style="margin-bottom:20px;"><label class="il">Confirm PIN</label><input class="inp" id="ob-pin2" type="password" placeholder="••••" maxlength="4"></div>
+      <div class="notice" style="margin-bottom:20px;font-size:12px;">Your XRPL wallet is created on testnet. <b>Ghana VASP Act 2025</b> · Ghana SEC + Bank of Ghana supervision.</div>
+      <button class="btn btn-y" id="ob-btn" onclick="createAccount()">Create my account →</button>
+      <div id="ob-status" style="display:none;text-align:center;font-size:13px;color:var(--t2);margin-top:10px;line-height:1.6;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div class="screen" id="s-home">
+  <div style="background:var(--bg);padding:54px 22px 0;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div><div style="font-size:12px;color:var(--t2);">Good morning,</div><div style="font-size:20px;font-weight:800;" id="home-greeting">—</div></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="live-badge"><div class="live-dot"></div>LIVE</span>
+        <button style="width:38px;height:38px;border-radius:50%;background:var(--cd);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;box-shadow:var(--sh);" onclick="refreshBalance()">🔔</button>
+      </div>
+    </div>
+  </div>
+  <div class="scroll" style="padding:0 22px;padding-bottom:90px;">
+    <div class="bh">
+      <div class="bh-deco"></div><div class="bh-deco2"></div>
+      <div style="font-size:12px;font-weight:600;color:rgba(0,0,0,0.5);margin-bottom:3px;">Your total savings</div>
+      <div style="font-size:42px;font-weight:800;color:var(--bk);letter-spacing:-1.5px;line-height:1.1;" id="h-bal">$0.00</div>
+      <div style="font-size:12px;color:rgba(0,0,0,0.45);margin-top:3px;font-weight:500;">≈ GHS <span id="h-ghs">0</span> · MTN MoMo</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.1);">
+        <span style="background:rgba(0,0,0,0.1);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;color:rgba(0,0,0,0.6);">~4% net / year</span>
+        <span style="font-size:12px;color:rgba(0,0,0,0.5);font-weight:600;">+$<span id="h-today">0.00</span> today</span>
+      </div>
+    </div>
+    <div class="qg">
+      <button class="qb" onclick="go('s-deposit')"><div class="qi">📥</div><div class="ql">Add Money</div></button>
+      <button class="qb" onclick="go('s-withdraw')"><div class="qi">📤</div><div class="ql">Withdraw</div></button>
+      <button class="qb" onclick="tab('s-susu','bnsusu')"><div class="qi">🏦</div><div class="ql">Savings</div></button>
+      <button class="qb" onclick="go('s-remit')"><div class="qi">✈️</div><div class="ql">Receive</div></button>
+    </div>
+    <div class="shdr" style="margin-top:4px;"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Your vault</span><button class="slink" onclick="tab('s-susu','bnsusu')">See all →</button></div>
+    <div class="vc">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.7px;">Backed by</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-top:2px;">Safe on-chain yield</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:1px;">Morpho Protocol · over-collateralised · on XRPL</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:24px;font-weight:800;color:var(--y);">~4%</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.5px;">net / year</div>
+        </div>
+      </div>
+      <div class="ar"><div class="an">ETH pool</div><div class="at"><div class="af" style="width:60%;"></div></div><div class="ap">60%</div></div>
+      <div class="ar"><div class="an">BTC pool</div><div class="at"><div class="af" style="width:25%;"></div></div><div class="ap">25%</div></div>
+      <div class="ar"><div class="an">Reserve</div><div class="at"><div class="af" style="width:15%;"></div></div><div class="ap">15%</div></div>
+      <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.2);border-top:1px solid rgba(255,255,255,0.07);padding-top:10px;">Yield is capped at 4% net. When on-chain yield exceeds 4%, the surplus builds a reserve. When it dips below, the reserve covers the gap.</div>
+    </div>
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Interest this week</span></div>
+    <div class="card" style="margin-bottom:16px;padding:14px 16px 12px;">
+      <div class="cbars" id="yield-chart">
+        <div class="cb" style="height:26px;"></div><div class="cb" style="height:32px;"></div><div class="cb" style="height:28px;"></div>
+        <div class="cb" style="height:40px;"></div><div class="cb" style="height:36px;"></div><div class="cb" style="height:46px;"></div>
+        <div class="cb hi" id="today-bar" style="height:56px;"></div>
+      </div>
+      <div class="cblbl"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span></div>
+    </div>
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Recent</span><button class="slink" onclick="tab('s-activity','bnact')">All →</button></div>
+    <div class="card" style="padding:4px 18px;" id="home-txlist">
+      <div style="padding:16px 0;text-align:center;color:var(--t3);font-size:13px;">Loading…</div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nb on" id="bnhome" onclick="tab('s-home','bnhome')"><div class="ni">🏠</div><div class="nl">Home</div><div class="ndot"></div></button>
+    <button class="nb" id="bnsusu" onclick="tab('s-susu','bnsusu')"><div class="ni">🏦</div><div class="nl">Savings</div><div class="ndot"></div></button>
+    <button class="nb" id="bnremit" onclick="tab('s-remit','bnremit')"><div class="ni">✈️</div><div class="nl">Receive</div><div class="ndot"></div></button>
+    <button class="nb" id="bnact" onclick="tab('s-activity','bnact')"><div class="ni">📊</div><div class="nl">Activity</div><div class="ndot"></div></button>
+    <button class="nb" id="bnprofile" onclick="tab('s-profile','bnprofile')"><div class="ni">👤</div><div class="nl">Profile</div><div class="ndot"></div></button>
+  </div>
+</div>
+
+<!-- ══ DEPOSIT ══ -->
+<div class="screen" id="s-deposit">
+  <div class="ihead"><button class="back" onclick="go('s-home')">←</button><div style="font-size:20px;font-weight:800;margin-bottom:3px;">Add money 💵</div><div style="font-size:13px;color:var(--t2);">From your MTN MoMo — converts to RLUSD</div></div>
+  <div class="scroll" style="padding:0 22px 28px;">
+    <div style="margin-bottom:16px;"><label class="il">Network</label>
+      <div class="pg2" id="pg-dep">
+        <div class="pb on" onclick="selP(this,'pg-dep')"><div class="pbi">📱</div><div class="pbn">MTN MoMo</div></div>
+        <div class="pb" onclick="selP(this,'pg-dep')"><div class="pbi">📶</div><div class="pbn">Vodafone</div></div>
+        <div class="pb" onclick="selP(this,'pg-dep')"><div class="pbi">🔴</div><div class="pbn">AirtelTigo</div></div>
+      </div>
+    </div>
+    <div class="ad">
+      <div style="margin-bottom:5px;font-size:12px;font-weight:600;color:var(--t3);">Amount in Cedis (GHS)</div>
+      <div><span class="ad-c">GHS</span><span class="ad-n" id="d-num"> 500</span></div>
+      <div class="ad-cv">You'll receive <b id="d-usd">$43.51</b> RLUSD in your savings</div>
+      <div class="ad-f">Bridge fee: GHS 0.92 · saves ~GHS 92 vs bank wire (9% avg)</div>
+    </div>
+    <div class="numpad" style="margin-bottom:14px;">
+      <button class="nk" onclick="nd('1')">1</button><button class="nk" onclick="nd('2')">2</button><button class="nk" onclick="nd('3')">3</button>
+      <button class="nk" onclick="nd('4')">4</button><button class="nk" onclick="nd('5')">5</button><button class="nk" onclick="nd('6')">6</button>
+      <button class="nk" onclick="nd('7')">7</button><button class="nk" onclick="nd('8')">8</button><button class="nk" onclick="nd('9')">9</button>
+      <button class="nk nk-sm" onclick="nd('000')">000</button><button class="nk" onclick="nd('0')">0</button><button class="nk nk-sm" onclick="ndDel()">⌫</button>
+    </div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;margin-bottom:14px;">
+      <div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t3);margin-bottom:2px;">You receive</div><div style="font-size:20px;font-weight:800;" id="d-recv">$43.51 RLUSD</div></div>
+      <div style="text-align:right;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t3);margin-bottom:2px;">Fee</div><div style="font-size:16px;font-weight:700;color:var(--gn);">GHS 0.92</div></div>
+    </div>
+    <button class="btn btn-y" id="dep-btn" onclick="startDeposit()">Add GHS <span id="d-btn">500</span> to savings →</button>
+  </div>
+</div>
+
+<!-- ══ PROCESSING ══ -->
+<div class="proc" id="proc">
+  <div style="text-align:center;margin-bottom:28px;"><div style="font-size:44px;margin-bottom:10px;">⚡</div><div style="font-size:22px;font-weight:800;color:#fff;" id="proc-title">Processing…</div><div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;" id="proc-sub">Broadcasting to XRPL Testnet</div></div>
+  <div style="width:100%;">
+    <div class="ps"><div class="pi" id="pi1">1</div><div class="pl" id="pl1">Authorising MoMo payment</div></div>
+    <div class="ps"><div class="pi" id="pi2">2</div><div class="pl" id="pl2">Converting GHS → RLUSD</div></div>
+    <div class="ps"><div class="pi" id="pi3">3</div><div class="pl" id="pl3">Submitting to XRPL Testnet</div></div>
+    <div class="ps"><div class="pi" id="pi4">4</div><div class="pl" id="pl4">Ledger close (~3.5 seconds)</div></div>
+    <div class="ps"><div class="pi" id="pi5">5</div><div class="pl" id="pl5">Crediting to Morpho vault 🎉</div></div>
+  </div>
+</div>
+
+<!-- ══ DEP SUCCESS ══ -->
+<div class="screen" id="s-dep-ok">
+  <div class="suc" style="padding-top:66px;">
+    <div class="sring">✓</div>
+    <div class="suc-lbl">Money added</div>
+    <div class="suc-amt" id="suc-amt">$43.51</div>
+    <div class="suc-sub">Now earning <b>~4% net / year</b> from safe on-chain yield via Morpho Protocol.</div>
+    <div class="fss" style="width:100%;"><span style="font-size:22px;">💚</span><div><div style="font-size:11px;color:var(--gn);font-weight:600;">Saved vs traditional wire</div><div style="font-size:16px;font-weight:800;color:var(--gn);">~GHS 92 · 9% → 0.08%</div></div></div>
+    <div class="shash" style="width:100%;">
+      <div class="shl">XRPL Transaction</div>
+      <div class="shv" id="suc-hash">—</div>
+      <a id="suc-exp" href="#" target="_blank" class="xlink" style="display:none;">🔗 View on XRPL Testnet Explorer ↗</a>
+    </div>
+    <button class="btn btn-y" style="width:100%;" onclick="go('s-home')">Back to home →</button>
+  </div>
+</div>
+
+<!-- ══ SAVINGS / SUSU ══ -->
+<div class="screen" id="s-susu">
+  <div style="background:var(--bg);padding:54px 22px 0;flex-shrink:0;">
+    <div style="font-size:12px;color:var(--t2);margin-bottom:2px;">Savings &amp; Goals</div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:14px;">Your <span style="color:#7A5C00;background:var(--y);padding:2px 8px;border-radius:8px;">Susu</span> vault</div>
+  </div>
+  <div class="scroll" style="padding:0 22px;padding-bottom:90px;">
+    <div class="vc">
+      <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:3px;">Total vault balance</div>
+      <div style="font-size:38px;font-weight:800;color:var(--y);letter-spacing:-1.5px;line-height:1.1;" id="v-total">$0.00</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:3px;">+$<span id="v-yield">0.00</span> interest earned · ~4% net / year</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+        <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">🔓 Available</div>
+          <div style="font-size:18px;font-weight:800;color:#fff;" id="v-free">$0.00</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;">Withdraw anytime</div>
+        </div>
+        <div style="background:rgba(255,192,0,0.12);border:1px solid rgba(255,192,0,0.25);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:10px;font-weight:600;color:rgba(255,192,0,0.6);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">🔒 Locked Susu</div>
+          <div style="font-size:18px;font-weight:800;color:var(--y);" id="v-locked">$0.00</div>
+          <div style="font-size:10px;color:rgba(255,192,0,0.5);margin-top:1px;" id="v-unlock-mini">Until Sep 2026</div>
+        </div>
+      </div>
+      <div id="v-goal-section" style="margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;">
+          <span style="color:rgba(255,255,255,0.5);" id="v-goal-label">🎓 Goal: Savings</span>
+          <span style="color:#fff;font-weight:700;">$<span id="v-prog-now">0</span> / $<span id="v-prog-target">1,000</span></span>
+        </div>
+        <div class="pt lt"><div class="pf lt" id="v-prog" style="width:0%;"></div></div>
+      </div>
+    </div>
+    <div class="shdr" style="margin-top:4px;"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Savings plans</span></div>
+    <div class="pgrid">
+      <div class="pc on" onclick="selPlan(this)"><div style="font-size:22px;margin-bottom:6px;">🔒</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Locked Susu</div><div style="font-size:11px;color:var(--t2);line-height:1.4;">Goal &amp; date. Full yield. Locked until maturity.</div></div>
+      <div class="pc" onclick="selPlan(this)"><div style="font-size:22px;margin-bottom:6px;">🔓</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Flex Save</div><div style="font-size:11px;color:var(--t2);line-height:1.4;">Withdraw anytime. Same yield. Emergency fund.</div></div>
+      <div class="pc" onclick="selPlan(this)"><div style="font-size:22px;margin-bottom:6px;">📅</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Auto-Save</div><div style="font-size:11px;color:var(--t2);line-height:1.4;">Weekly/monthly MoMo deduction. Set &amp; forget.</div></div>
+      <div class="pc" style="opacity:0.45;"><div style="font-size:22px;margin-bottom:6px;">👥</div><div style="font-size:13px;font-weight:700;margin-bottom:3px;">Group Susu</div><div style="font-size:11px;color:var(--t2);line-height:1.4;">Pool with family. Rotating payouts. Soon.</div></div>
+    </div>
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">How yield works</span></div>
+    <div class="card" style="padding:18px;margin-bottom:14px;">
+      <div class="rr"><div class="ri">💵</div><div>Your GHS converts to <b>RLUSD</b> (US dollar stablecoin on XRPL) so inflation can't eat your savings.</div></div>
+      <div class="rr"><div class="ri">📈</div><div>Gross on-chain yield from <b>Morpho Protocol</b> — over-collateralised lending backed by ETH &amp; BTC. You always receive a <b>stable 4% net</b>. Surplus above 4% is saved as a reserve buffer.</div></div>
+      <div class="rr"><div class="ri">🛡️</div><div>Institutional borrowers post <b>ETH &amp; BTC as collateral</b>. Over-collateralised. Auditable on-chain. Not speculation.</div></div>
+      <div class="rr"><div class="ri">📆</div><div>Interest arrives <b>every day</b>, auto-compounded into your balance.</div></div>
+      <div class="rr"><div class="ri">🔒</div><div>Locked Susu: cannot withdraw before unlock date without forfeiting all accrued interest.</div></div>
+      <div class="rr"><div class="ri">📋</div><div>Up to <b>GHS 1,000/day</b> with phone number only (Tier 0). Upgrade for higher limits.</div></div>
+    </div>
+    <!-- YIELD COMPARISON -->
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Why dollar savings beat cedi</span></div>
+    <div class="card" style="padding:4px 18px;margin-bottom:14px;">
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:var(--ys);">🇺🇸</div>
+        <div class="cmp-body"><div class="cmp-name">Sika (RLUSD)</div><div class="cmp-sub">Safe on-chain yield · Morpho · stable 4%</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--gn);">~4% net</div><div style="font-size:10px;color:var(--t3);">USD</div></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:#F5F5F5;">🏦</div>
+        <div class="cmp-body"><div class="cmp-name">Ghana bank deposit</div><div class="cmp-sub">Cedi-denominated · volatile</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--t2);">18–22%</div><div style="font-size:10px;color:var(--rd);">GHS (−90% vs USD '15–'24)</div></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:#F5F5F5;">💳</div>
+        <div class="cmp-body"><div class="cmp-name">Yellow Card</div><div class="cmp-sub">USDT/USDC-centric · opaque yield</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--t2);">~4%</div><div style="font-size:10px;color:var(--t3);">opaque source</div></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:#F5F5F5;">🛋️</div>
+        <div class="cmp-body"><div class="cmp-name">Under the mattress</div><div class="cmp-sub">Cash · no yield</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--rd);">0%</div><div style="font-size:10px;color:var(--t3);">no protection</div></div>
+      </div>
+    </div>
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Contribution history</span></div>
+    <div class="card" style="padding:4px 18px;margin-bottom:16px;" id="susu-hist">
+      <div style="padding:14px 0;text-align:center;color:var(--t3);font-size:13px;">Loading…</div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="tab('s-home','bnhome')"><div class="ni">🏠</div><div class="nl">Home</div><div class="ndot"></div></button>
+    <button class="nb on" id="bnsusu2"><div class="ni">🏦</div><div class="nl">Savings</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-remit','bnremit')"><div class="ni">✈️</div><div class="nl">Receive</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-activity','bnact')"><div class="ni">📊</div><div class="nl">Activity</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-profile','bnprofile')"><div class="ni">👤</div><div class="nl">Profile</div><div class="ndot"></div></button>
+  </div>
+</div>
+
+<!-- ══ WITHDRAW ══ -->
+<div class="screen" id="s-withdraw">
+  <div class="ihead"><button class="back" onclick="go('s-home')">←</button><div style="font-size:20px;font-weight:800;margin-bottom:3px;">Withdraw 💸</div><div style="font-size:13px;color:var(--t2);">RLUSD → GHS → your MoMo wallet</div></div>
+  <div class="scroll" style="padding:0 22px 28px;">
+    <div class="card-y" style="border-radius:var(--rlg);margin-bottom:12px;">
+      <div style="font-size:12px;font-weight:600;color:rgba(0,0,0,0.5);margin-bottom:3px;">Available now</div>
+      <div style="font-size:36px;font-weight:800;color:var(--bk);letter-spacing:-1.5px;" id="w-avail">$0.00</div>
+      <div style="font-size:12px;color:rgba(0,0,0,0.4);margin-top:2px;">Free balance · not locked</div>
+    </div>
+    <div class="notice" style="margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;font-size:12px;">
+      <div style="font-size:18px;">🔒</div>
+      <div><div style="font-weight:700;margin-bottom:2px;" id="w-locked-label">Locked in Susu vault</div><div style="color:var(--t2);">School fees goal. Early exit forfeits all interest earned.</div></div>
+    </div>
+    <div class="ad">
+      <div style="margin-bottom:5px;font-size:12px;font-weight:600;color:var(--t3);">How much?</div>
+      <div><span class="ad-c">$</span><span class="ad-n" id="w-num">100</span></div>
+      <div class="ad-cv">≈ <b id="w-ghs">GHS 1,147</b> to your MTN MoMo</div>
+      <div class="ad-f">Fee: GHS 0.46 · <span style="color:var(--gn);font-weight:700;">vs GHS 100+ traditional (9%)</span></div>
+    </div>
+    <div class="numpad" style="margin-bottom:14px;">
+      <button class="nk" onclick="nw('1')">1</button><button class="nk" onclick="nw('2')">2</button><button class="nk" onclick="nw('3')">3</button>
+      <button class="nk" onclick="nw('4')">4</button><button class="nk" onclick="nw('5')">5</button><button class="nk" onclick="nw('6')">6</button>
+      <button class="nk" onclick="nw('7')">7</button><button class="nk" onclick="nw('8')">8</button><button class="nk" onclick="nw('9')">9</button>
+      <button class="nk nk-sm" onclick="nw('50')">50</button><button class="nk" onclick="nw('0')">0</button><button class="nk nk-sm" onclick="nwDel()">⌫</button>
+    </div>
+    <div style="margin-bottom:14px;"><label class="il">Destination</label>
+      <div class="dc on" onclick="selD(this)"><div class="di">📱</div><div><div class="dn">MTN MoMo</div><div class="ds" id="w-phone-display">Your registered number</div></div><div class="df">GHS 0.46</div></div>
+      <div class="dc" onclick="selD(this)"><div class="di" style="background:#F0F0F0;font-size:15px;font-weight:800;">↗</div><div><div class="dn">Send to another user</div><div class="ds">Any Sika phone number</div></div><div class="df">GHS 0.46</div></div>
+    </div>
+    <button class="btn btn-d" id="wd-btn" onclick="startWithdraw()">Withdraw $<span id="w-btn">100</span> →</button>
+  </div>
+</div>
+
+<!-- ══ WITHDRAW SUCCESS ══ -->
+<div class="screen" id="s-w-ok">
+  <div class="suc" style="padding-top:66px;">
+    <div class="sring">✓</div>
+    <div class="suc-lbl">Sent to MoMo</div>
+    <div class="suc-amt" id="ws-ghs">GHS 1,147</div>
+    <div class="suc-sub">Arrived in your MTN MoMo wallet</div>
+    <div class="fss" style="width:100%;"><span style="font-size:22px;">💚</span><div><div style="font-size:11px;color:var(--gn);font-weight:600;">Saved vs 9% traditional fee</div><div style="font-size:16px;font-weight:800;color:var(--gn);" id="ws-saved">~GHS 114</div></div></div>
+    <div class="shash" style="width:100%;">
+      <div class="shl">XRPL Transaction</div>
+      <div class="shv" id="ws-hash">—</div>
+      <a id="ws-exp" href="#" target="_blank" class="xlink" style="display:none;">🔗 View on XRPL Testnet Explorer ↗</a>
+    </div>
+    <button class="btn btn-y" style="width:100%;" onclick="go('s-home')">Back to home →</button>
+  </div>
+</div>
+
+<!-- ══ REMITTANCE RECEIVE ══ -->
+<div class="screen" id="s-remit">
+  <div style="background:var(--bg);padding:54px 22px 0;flex-shrink:0;">
+    <div style="font-size:12px;color:var(--t2);margin-bottom:2px;">Receive from abroad</div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:14px;">Remittance <span style="color:var(--gn);">corridor</span></div>
+  </div>
+  <div class="scroll" style="padding:0 22px;padding-bottom:90px;">
+    <!-- Pain point -->
+    <div class="notice rd" style="margin-bottom:14px;">
+      <b>Today you pay ~9% to receive money.</b> On GHS 1,147/month that's GHS 103 lost — roughly a full day's wages — every single transfer.
+    </div>
+    <!-- Your receive link -->
+    <div class="shdr" style="margin-top:4px;"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Your receive link</span></div>
+    <div class="card" style="padding:16px 18px;margin-bottom:14px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Share this with your family abroad</div>
+      <div style="background:var(--bg);border-radius:var(--rsm);padding:12px;font-family:'Courier New',monospace;font-size:12px;color:var(--t2);word-break:break-all;margin-bottom:10px;" id="remit-link">sika.app/pay/+233241234567</div>
+      <button class="btn btn-d" style="padding:12px;" onclick="showToast('Link copied to clipboard! 📋','✅')">Copy link</button>
+    </div>
+    <!-- How it works -->
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">How it works</span></div>
+    <div class="card" style="padding:18px;margin-bottom:14px;">
+      <div class="rr"><div class="ri">1</div><div>Your family in the <b>UK or North America</b> sends dollars via the link — no Sika account needed on their end.</div></div>
+      <div class="rr"><div class="ri">2</div><div>Funds arrive as <b>RLUSD directly into your vault</b> in under 10 seconds. No intermediary.</div></div>
+      <div class="rr"><div class="ri">3</div><div>You can <b>save it and earn interest</b>, or withdraw to MoMo immediately. Your choice.</div></div>
+      <div class="rr"><div class="ri">4</div><div>Fee: <b>~0.08%</b> vs ~9% average traditional cost. On $100 that's $0.08 vs $9.</div></div>
+    </div>
+    <!-- Comparison -->
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Fee comparison · $100 sent</span></div>
+    <div class="card" style="padding:4px 18px;margin-bottom:14px;">
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:var(--ys);">✅</div>
+        <div class="cmp-body"><div class="cmp-name">Sika</div><div class="cmp-sub">XRPL · RLUSD · 10 seconds</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--gn);">$0.08</div></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:#F5F5F5;">💸</div>
+        <div class="cmp-body"><div class="cmp-name">Western Union / Remitly</div><div class="cmp-sub">Traditional rail · 1–3 days</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--rd);">$8–10</div></div>
+      </div>
+      <div class="cmp-row">
+        <div class="cmp-ico" style="background:#F5F5F5;">🏦</div>
+        <div class="cmp-body"><div class="cmp-name">Bank wire</div><div class="cmp-sub">SWIFT · 3–5 business days</div></div>
+        <div class="cmp-right"><div class="cmp-rate" style="color:var(--rd);">$25–40</div></div>
+      </div>
+    </div>
+    <!-- Simulate receive -->
+    <div class="shdr"><span style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;">Simulate receiving remittance</span></div>
+    <div class="card" style="padding:16px 18px;margin-bottom:14px;">
+      <div style="font-size:13px;color:var(--t2);margin-bottom:12px;">Simulate a £100 remittance from a family member in the UK arriving in your account.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+        <div style="background:var(--bg);border-radius:var(--rsm);padding:12px;text-align:center;">
+          <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Traditional cost</div>
+          <div style="font-size:18px;font-weight:800;color:var(--rd);">$9.00</div>
+          <div style="font-size:10px;color:var(--t3);">9% of $100</div>
+        </div>
+        <div style="background:var(--gs);border-radius:var(--rsm);padding:12px;text-align:center;">
+          <div style="font-size:10px;font-weight:700;color:var(--gn);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Sika cost</div>
+          <div style="font-size:18px;font-weight:800;color:var(--gn);">$0.08</div>
+          <div style="font-size:10px;color:var(--gn);">saves $8.92</div>
+        </div>
+      </div>
+      <button class="btn btn-y" onclick="simulateRemit()">Receive $100 from UK →</button>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="tab('s-home','bnhome')"><div class="ni">🏠</div><div class="nl">Home</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-susu','bnsusu')"><div class="ni">🏦</div><div class="nl">Savings</div><div class="ndot"></div></button>
+    <button class="nb on" id="bnremit2"><div class="ni">✈️</div><div class="nl">Receive</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-activity','bnact')"><div class="ni">📊</div><div class="nl">Activity</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-profile','bnprofile')"><div class="ni">👤</div><div class="nl">Profile</div><div class="ndot"></div></button>
+  </div>
+</div>
+
+<!-- ══ ACTIVITY ══ -->
+<div class="screen" id="s-activity">
+  <div style="background:var(--bg);padding:54px 22px 14px;flex-shrink:0;">
+    <div style="font-size:12px;color:var(--t2);margin-bottom:2px;">All transactions</div>
+    <div style="font-size:22px;font-weight:800;">Activity</div>
+  </div>
+  <div class="scroll" style="padding:0 22px;padding-bottom:90px;">
+    <div class="mgrid">
+      <div class="mt"><div class="mtl">Total saved</div><div class="mtv" id="act-total">$0</div></div>
+      <div class="mt" style="background:var(--y);"><div class="mtl" style="color:rgba(0,0,0,0.45);">Interest earned</div><div class="mtv" style="color:var(--bk);" id="act-earn">$0.00</div></div>
+      <div class="mt"><div class="mtl">Withdrawn</div><div class="mtv" style="color:var(--t2);" id="act-wd">$0.00</div></div>
+      <div class="mt" style="background:var(--gs);"><div class="mtl" style="color:var(--gn);">Fees saved</div><div class="mtv" style="color:var(--gn);" id="act-saved">~GHS 0</div></div>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;">Transactions</div>
+    <div class="card" style="padding:4px 18px;margin-bottom:16px;" id="act-list">
+      <div style="padding:14px 0;text-align:center;color:var(--t3);font-size:13px;">Loading…</div>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;">XRPL Testnet wallet</div>
+    <div class="card" style="padding:14px 18px;margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:5px;">Wallet address</div>
+      <div style="font-family:'Courier New',monospace;font-size:11px;color:var(--tx);word-break:break-all;" id="act-wallet">—</div>
+      <a id="act-exp-link" href="#" target="_blank" class="xlink" style="display:none;">🔗 View on XRPL Testnet Explorer ↗</a>
+      <div style="margin-top:10px;font-size:12px;color:var(--t3);">XRP balance: <b id="act-xrp">—</b></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="tab('s-home','bnhome')"><div class="ni">🏠</div><div class="nl">Home</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-susu','bnsusu')"><div class="ni">🏦</div><div class="nl">Savings</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-remit','bnremit')"><div class="ni">✈️</div><div class="nl">Receive</div><div class="ndot"></div></button>
+    <button class="nb on" id="bnact2"><div class="ni">📊</div><div class="nl">Activity</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-profile','bnprofile')"><div class="ni">👤</div><div class="nl">Profile</div><div class="ndot"></div></button>
+  </div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div class="screen" id="s-profile">
+  <div style="background:var(--bk);padding:54px 22px 24px;flex-shrink:0;border-radius:0 0 26px 26px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="width:58px;height:58px;border-radius:50%;background:var(--y);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--bk);" id="prof-av">?</div>
+      <div>
+        <div style="font-size:18px;font-weight:800;color:#fff;" id="prof-name">—</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:1px;" id="prof-phone">—</div>
+        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="pill pill-y">✓ Phone verified</span>
+          <span class="pill pill-dk" id="prof-tier">Tier 0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll" style="padding:18px 22px;padding-bottom:90px;">
+    <div class="mgrid">
+      <div class="mt"><div class="mtl">Balance</div><div class="mtv" id="prof-bal">$0</div></div>
+      <div class="mt"><div class="mtl">Interest earned</div><div class="mtv" style="color:var(--gn);" id="prof-earn">$0.00</div></div>
+      <div class="mt"><div class="mtl">Net APY</div><div class="mtv">~4%</div></div>
+      <div class="mt"><div class="mtl">Daily interest</div><div class="mtv" style="font-size:15px;" id="prof-daily">$0.00</div></div>
+    </div>
+    <!-- KYC TIERS -->
+    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;">KYC Tiers &amp; Limits</div>
+    <div class="tier-row">
+      <div class="tier-card active-tier">
+        <div style="font-size:10px;font-weight:700;color:var(--gn);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Tier 0 · Active</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px;">Phone only</div>
+        <div style="font-size:10px;color:var(--t2);">GHS 1,000/day</div>
+      </div>
+      <div class="tier-card" onclick="showToast('Upload National ID to unlock Tier 1: GHS 10,000/day','📋')">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Tier 1</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px;">+ National ID</div>
+        <div style="font-size:10px;color:var(--t2);">GHS 10,000/day</div>
+      </div>
+      <div class="tier-card" onclick="showToast('Full KYC: passport + proof of address. Unlimited transfers.','🛂')">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Tier 2</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px;">Full KYC</div>
+        <div style="font-size:10px;color:var(--t2);">Unlimited</div>
+      </div>
+    </div>
+    <div class="notice" style="margin-bottom:14px;font-size:12px;">KYC uses <b>Smile Identity</b> (Africa-native). Transfers over $1,000 require FATF Travel Rule compliance via <b>Chainalysis KYT</b>.</div>
+    <!-- WALLET -->
+    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;">XRPL wallet</div>
+    <div class="card" style="padding:4px 18px;margin-bottom:14px;">
+      <div class="sr"><div class="sr-l">Address</div><div style="font-family:'Courier New',monospace;font-size:10px;color:var(--t2);" id="prof-wallet">—</div></div>
+      <div class="sr"><div class="sr-l">Network</div><div class="sr-v">XRPL Testnet</div></div>
+      <div class="sr"><div class="sr-l">Token</div><span class="pill pill-dk" style="font-size:10px;">RLUSD · NYDFS</span></div>
+      <div class="sr"><div class="sr-l">Custody</div><div class="sr-v">Fireblocks (prod)</div></div>
+    </div>
+    <!-- REGULATORY -->
+    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;">Regulatory</div>
+    <div class="card" style="padding:4px 18px;margin-bottom:14px;">
+      <div class="sr"><div class="sr-l">Jurisdiction</div><div class="sr-v">Ghana · VASP Act 2025</div></div>
+      <div class="sr"><div class="sr-l">Regulator</div><div class="sr-v">Ghana SEC + BoG</div></div>
+      <div class="sr"><div class="sr-l">Sandbox</div><span class="pill pill-gn" style="font-size:10px;">Cohort 2 applicant</span></div>
+      <div class="sr"><div class="sr-l">AML/KYT</div><div class="sr-v">Chainalysis KYT</div></div>
+      <div class="sr"><div class="sr-l">MoMo bridge</div><div class="sr-v">Hubtel / Flutterwave</div></div>
+    </div>
+    <!-- SAVINGS SETTINGS -->
+    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;">Savings settings</div>
+    <div class="card" style="padding:4px 18px;margin-bottom:14px;">
+      <div class="sr"><div class="sr-l">Active plan</div><span class="pill pill-dk" style="font-size:10px;" id="prof-plan">Flex Save</span></div>
+      <div class="sr"><div class="sr-l">Goal</div><div class="sr-v" id="prof-goal">—</div></div>
+      <div class="sr"><div class="sr-l">Unlocks</div><div class="sr-v" id="prof-unlock">—</div></div>
+      <div class="sr" style="cursor:pointer;" onclick="showToast('Emergency exit submitted. 24–48h review. All interest will be forfeited.','⚠️')">
+        <div class="sr-l" style="color:var(--rd);">Emergency early exit →</div>
+        <div style="font-size:16px;color:var(--rd);">→</div>
+      </div>
+    </div>
+    <button class="btn btn-g" style="margin-bottom:6px;" onclick="go('s-splash');resetUser();">Sign out</button>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="tab('s-home','bnhome')"><div class="ni">🏠</div><div class="nl">Home</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-susu','bnsusu')"><div class="ni">🏦</div><div class="nl">Savings</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-remit','bnremit')"><div class="ni">✈️</div><div class="nl">Receive</div><div class="ndot"></div></button>
+    <button class="nb" onclick="tab('s-activity','bnact')"><div class="ni">📊</div><div class="nl">Activity</div><div class="ndot"></div></button>
+    <button class="nb on"><div class="ni">👤</div><div class="nl">Profile</div><div class="ndot"></div></button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastEl"><div style="font-size:20px;flex-shrink:0;" id="t-ico">💰</div><div style="font-size:12px;color:#fff;font-weight:500;line-height:1.45;" id="t-txt"></div></div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ti"><span class="tl">RLUSD</span><span class="tv">$1.0000</span></div>
+  <div class="ti"><span class="tl">GHS/USD</span><span class="tv">0.0872</span></div>
+  <div class="ti"><span class="tl">Yield</span><span class="tv">~4% net</span></div>
+  <div class="ti"><span class="tl">Ledger</span><span class="tv" id="tk-ledger">—</span></div>
+  <div class="ti"><span class="tl" id="tk-time">—</span></div>
+</div>
+
+</div><!-- /shell -->
+</div><!-- /outer -->
+
+<script>
+// ── CONFIG ──
+const API   = '';   // same origin
+const GHS   = 11.47;
+const FEE   = 0.08;
+
+// ── STATE ──
+let userId = null, userData = null;
+let dA = '500', wA = '100';
+
+// ── API ──
+async function api(method, path, body) {
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(API + '/api' + path, opts);
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'API error');
+    return d;
+  } catch (e) { console.error('API:', e.message); throw e; }
+}
+
+// ── NAV ──
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('active');
+  const sc = el.querySelector('.scroll'); if (sc) sc.scrollTop = 0;
+  const isLight = ['s-splash','s-quick-login'].includes(id);
+  document.getElementById('sbar').className = 'sb ' + (isLight ? 'lt' : 'dk');
+}
+function tab(sid, bid) {
+  go(sid);
+  ['bnhome','bnsusu','bnremit','bnact','bnprofile',
+   'bnsusu2','bnremit2','bnact2'].forEach(id => { const b=document.getElementById(id); if(b)b.classList.remove('on'); });
+  const b = document.getElementById(bid); if(b) b.classList.add('on');
+}
+
+// ── SELECTORS ──
+function selP(el,gid) { document.getElementById(gid).querySelectorAll('.pb').forEach(b=>b.classList.remove('on')); el.classList.add('on'); }
+function selPlan(el)  { el.closest('.pgrid').querySelectorAll('.pc').forEach(c=>c.classList.remove('on')); el.classList.add('on'); }
+function selD(el)     { document.querySelectorAll('.dc').forEach(d=>d.classList.remove('on')); el.classList.add('on'); }
+function otpK()       { setTimeout(()=>go('s-ob3'),200); }
+
+// ── ONBOARDING ──
+function obNext1() {
+  const phone = document.getElementById('ob-phone').value.trim();
+  if (!phone) { showToast('Please enter your phone number','⚠️'); return; }
+  document.getElementById('ob-phone-show').textContent = phone;
+  go('s-ob2');
+}
+
+async function createAccount() {
+  const btn    = document.getElementById('ob-btn');
+  const status = document.getElementById('ob-status');
+  const name   = document.getElementById('ob-name').value.trim();
+  const phone  = document.getElementById('ob-phone').value.replace(/\s/g,'');
+  const pin    = document.getElementById('ob-pin').value;
+  const pin2   = document.getElementById('ob-pin2').value;
+  if (!name)        { showToast('Please enter your name','⚠️'); return; }
+  if (!phone)       { showToast('Please enter your phone number','⚠️'); return; }
+  if (pin !== pin2) { showToast('PINs do not match','⚠️'); return; }
+  btn.disabled = true;
+  btn.textContent = '⏳ Creating your XRPL wallet…';
+  status.innerHTML = '📡 Connecting to XRPL Testnet…<br><span style="font-size:11px;color:var(--t3);">Requesting testnet XRP from faucet. This takes 10–30 seconds.</span>';
+  status.style.display = 'block';
+  try {
+    const data = await api('POST', '/onboard', { phone, name });
+    userId   = data.user.userId;
+    userData = data.user;
+    populateUI(data.user);
+    go('s-home');
+    loadTxs();
+    pollXrpl();
+    const isReal = data.wallet?.onChain !== false;
+    showToast(
+      isReal
+        ? 'Welcome, ' + name.split(' ')[0] + '! Real XRPL wallet created 🎉'
+        : 'Welcome, ' + name.split(' ')[0] + '! (simulated wallet — faucet unavailable)',
+      isReal ? '✅' : '⚠️'
+    );
+  } catch(e) {
+    status.textContent = '⚠️ ' + e.message;
+    btn.disabled = false;
+    btn.textContent = 'Create my account →';
+  }
+}
+
+// ── LOGIN ──
+async function doLogin() {
+  const phone = document.getElementById('login-phone').value.replace(/\s/g,'');
+  if (!phone) { showErr('login-err','Enter your phone number'); return; }
+  try {
+    const data = await api('POST', '/login', { phone });
+    userId   = data.user.userId;
+    userData = data.user;
+    populateUI(data.user);
+    go('s-home');
+    loadTxs();
+    pollXrpl();
+  } catch(e) {
+    showErr('login-err', e.message.includes('not found') ? 'Account not found. Try creating one.' : e.message);
+  }
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  if(el) { el.textContent = msg; el.style.display='block'; }
+}
+
+function resetUser() { userId=null; userData=null; }
+
+// ── POPULATE UI ──
+function populateUI(u) {
+  const fmt  = n => '$' + parseFloat(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  const name1= (u.name||'User').split(' ')[0];
+  const avIn = (u.name||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  set('home-greeting',  name1+' 👋');
+  set('h-bal',          fmt(u.totalBalance));
+  set('h-ghs',          Math.round((u.totalBalance||0)*GHS).toLocaleString());
+  set('h-today',        parseFloat(u.dailyYield||0).toFixed(4));
+  set('v-total',        fmt(u.totalBalance));
+  set('v-free',         fmt(u.freeBalance));
+  set('v-locked',       fmt(u.lockedBalance));
+  set('v-yield',        parseFloat(u.totalYield||0).toFixed(4));
+  set('v-prog-now',     Math.round(u.lockedBalance||0));
+  set('v-prog-target',  (u.goal?.target||1000).toLocaleString());
+  set('v-goal-label',   '🎓 Goal: '+(u.goal?.name||'Savings'));
+  set('v-unlock-mini',  'Until '+(u.goal?.unlockDate||'Sep 2026'));
+  set('w-avail',        fmt(u.freeBalance));
+  set('w-locked-label', fmt(u.lockedBalance)+' locked until '+(u.goal?.unlockDate||'01 Sep 2026'));
+  set('w-phone-display',u.phone||'Your number');
+  set('act-total',      fmt(u.totalDeposited));
+  set('act-earn',       fmt(u.totalYield));
+  set('act-wd',         fmt(u.totalWithdrawn));
+  set('act-saved',      '~GHS '+Math.round((u.totalWithdrawn||0)*1.09).toLocaleString());
+  set('prof-bal',       fmt(u.totalBalance));
+  set('prof-earn',      fmt(u.totalYield));
+  set('prof-daily',     '$'+parseFloat(u.dailyYield||0).toFixed(4));
+  set('prof-name',      u.name||'—');
+  set('prof-phone',     u.phone||'—');
+  set('prof-av',        avIn);
+  set('prof-wallet',    u.walletAddress||'—');
+  set('prof-plan',      u.plan||'Flex Save');
+  set('prof-goal',      u.goal?.name ? u.goal.name+' · $'+(u.goal.target||0) : '—');
+  set('prof-unlock',    u.goal?.unlockDate||'—');
+  set('act-wallet',     u.walletAddress||'—');
+  set('remit-link',     'sika.app/pay/'+(u.phone||'—'));
+  const prog = document.getElementById('v-prog');
+  if(prog) {
+    const pct = u.goal?.target > 0
+      ? Math.min(100, ((u.totalBalance||0) / u.goal.target) * 100)
+      : Math.min(100, (u.progressPct||0));
+    prog.style.width = pct.toFixed(1)+'%';
+    set('v-prog-now', Math.round(u.totalBalance||0));
+  }
+  const alink = document.getElementById('act-exp-link');
+  if(alink && u.walletAddress && !u.walletAddress.includes('Demo') && !u.walletAddress.includes('XXXX')) {
+    alink.href='https://testnet.xrpl.org/accounts/'+u.walletAddress;
+    alink.style.display='inline-flex';
+  }
+  userData = u;
+}
+
+function set(id,val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+
+// ── REFRESH ──
+async function refreshBalance() {
+  if(!userId) return;
+  try { const d = await api('GET','/balance/'+userId); populateUI(d); loadTxs(); showToast('Balance refreshed ✓','🔄'); }
+  catch(e) { showToast('Refresh failed: '+e.message,'⚠️'); }
+}
+
+// ── TRANSACTIONS ──
+async function loadTxs() {
+  if(!userId) return;
+  try {
+    const d = await api('GET','/transactions/'+userId);
+    renderTxs(d.transactions);
+  } catch {}
+}
+
+function renderTxs(txs) {
+  const homeEl  = document.getElementById('home-txlist');
+  const actEl   = document.getElementById('act-list');
+  const susuEl  = document.getElementById('susu-hist');
+  if(!txs||!txs.length) {
+    [homeEl,actEl,susuEl].forEach(el=>{ if(el) el.innerHTML='<div style="padding:14px 0;text-align:center;color:var(--t3);font-size:13px;">No transactions yet. Add your first deposit!</div>'; });
+    return;
+  }
+  const rows = txs.slice(0,10).map(txRow).join('');
+  if(homeEl) homeEl.innerHTML = txs.slice(0,4).map(txRow).join('');
+  if(actEl)  actEl.innerHTML  = rows;
+  if(susuEl) susuEl.innerHTML = txs.slice(0,5).map(txRow).join('');
+}
+
+function txRow(tx) {
+  const isIn    = tx.type==='deposit';
+  const isYield = tx.type==='yield';
+  const isOut   = tx.type==='withdraw';
+  const ico     = isIn?'📥':isYield?'💰':'📤';
+  const cls     = isIn?'txi-in':isYield?'txi-y':'txi-out';
+  const amtCls  = isOut?'txmn':'txp';
+  const amt     = isOut?'−$'+Math.abs(tx.amount).toFixed(2):'+$'+Math.abs(tx.amount).toFixed(isYield?4:2);
+  const when    = timeAgo(tx.time);
+  const hash    = tx.hash?tx.hash.substring(0,14)+'…':'';
+  const expLink = tx.hash&&!tx.hash.startsWith('MOCK')&&!tx.hash.includes('...')
+    ? `<a href="https://testnet.xrpl.org/transactions/${tx.hash}" target="_blank" style="color:var(--y);text-decoration:none;font-size:10px;">↗</a>` : '';
+  return `<div class="txr">
+    <div class="txi ${cls}">${ico}</div>
+    <div class="txb"><div class="txn">${tx.note||tx.type}</div><div class="txs">${hash}${expLink}</div></div>
+    <div class="txr-r"><div class="${amtCls}">${amt}</div><div class="txt">${when}</div></div>
+  </div>`;
+}
+
+function timeAgo(ts) {
+  const s=(Date.now()-ts)/1000;
+  if(s<60) return 'Just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+
+// ── DEPOSIT NUMPAD ──
+function nd(d) {
+  if(d==='000'){if(dA!=='0')dA+='000';}
+  else if(dA==='0')dA=d;
+  else if(dA.length<7)dA+=d;
+  uD();
+}
+function ndDel() { dA=dA.length>1?dA.slice(0,-1):'0'; uD(); }
+function uD() {
+  const g=parseInt(dA)||0, u=Math.max(0,g/GHS-FEE).toFixed(2);
+  set('d-num',' '+g.toLocaleString());
+  set('d-usd','$'+u);
+  set('d-recv','$'+u+' RLUSD');
+  set('d-btn',g.toLocaleString());
+}
+
+// ── WITHDRAW NUMPAD ──
+function nw(d) { if(wA==='0')wA=d; else if(wA.length<6)wA+=d; uW(); }
+function nwDel() { wA=wA.length>1?wA.slice(0,-1):'0'; uW(); }
+function uW() {
+  const u=parseInt(wA)||0, g=Math.round(u*GHS);
+  set('w-num',u.toLocaleString());
+  set('w-ghs','GHS '+g.toLocaleString());
+  set('w-btn',u.toLocaleString());
+}
+
+// ── DEPOSIT FLOW ──
+async function startDeposit() {
+  if(!userId) { showToast('Please sign in first','⚠️'); return; }
+  const btn = document.getElementById('dep-btn');
+  btn.disabled = true;
+  runProc('Adding your money…','Broadcasting to XRPL Testnet', async () => {
+    const ghs = parseInt(dA)||500;
+    return api('POST','/deposit',{userId, ghsAmount: ghs});
+  }, result => {
+    set('suc-amt','$'+result.rlusdCredit.toFixed(2));
+    const hashEl=document.getElementById('suc-hash');
+    const expEl=document.getElementById('suc-exp');
+    if(result.xrpl.onChain) {
+      hashEl.textContent=result.xrpl.txHash+' · Ledger #'+result.xrpl.ledgerIndex;
+      if(result.xrpl.explorerUrl){expEl.href=result.xrpl.explorerUrl;expEl.style.display='inline-flex';}
+    } else {
+      hashEl.textContent=result.xrpl.txHash+' (vault recorded)';
+    }
+    populateUI(result.balance);
+    loadTxs();
+    go('s-dep-ok');
+    dA='500'; uD();
+    btn.disabled=false;
+  }, ()=>{ btn.disabled=false; });
+}
+
+// ── WITHDRAW FLOW ──
+async function startWithdraw() {
+  if(!userId) { showToast('Please sign in first','⚠️'); return; }
+  const btn=document.getElementById('wd-btn');
+  btn.disabled=true;
+  runProc('Withdrawing…','Sending to your MoMo wallet',
+    async()=>{
+      const usd=parseInt(wA)||100;
+      return api('POST','/withdraw',{userId,usdAmount:usd});
+    },
+    result=>{
+      set('ws-ghs','GHS '+result.ghsAmount.toLocaleString());
+      set('ws-saved','~GHS '+Math.round(result.usdAmount*1.09));
+      const he=document.getElementById('ws-hash'),ee=document.getElementById('ws-exp');
+      if(result.xrpl.onChain){
+        he.textContent=result.xrpl.txHash+' · Ledger #'+result.xrpl.ledgerIndex;
+        ee.href=result.xrpl.explorerUrl;
+        ee.style.display='inline-flex';
+      } else {
+        he.textContent='Vault recorded (real XRPL tx requires funded testnet wallet)';
+        ee.style.display='none';
+      }
+      populateUI(result.balance);
+      loadTxs();
+      go('s-w-ok');
+      wA='100'; uW();
+      btn.disabled=false;
+    },
+    ()=>{ btn.disabled=false; }
+  );
+}
+
+// ── SIMULATE REMITTANCE ──
+async function simulateRemit() {
+  if(!userId) { showToast('Sign in first to receive money','⚠️'); return; }
+  runProc('Receiving remittance…','From UK sender → XRPL',
+    async()=>{
+      return api('POST','/deposit',{userId, ghsAmount: 1147, note:'Diaspora remittance · UK sender'});
+    },
+    result=>{
+      populateUI(result.balance);
+      loadTxs();
+      showToast('$100 received from UK! Saved $8.92 vs Western Union 💚','✈️');
+      tab('s-home','bnhome');
+    },
+    ()=>{}
+  );
+}
+
+// ── GENERIC PROC RUNNER ──
+async function runProc(title, sub, apiFn, onSuccess, onErr) {
+  const ov=document.getElementById('proc');
+  set('proc-title',title);
+  set('proc-sub',sub);
+  [1,2,3,4,5].forEach(i=>{
+    document.getElementById('pi'+i).className='pi';
+    document.getElementById('pi'+i).textContent=i;
+    document.getElementById('pl'+i).className='pl';
+  });
+  ov.classList.add('show');
+  let step=0;
+  const si=setInterval(()=>{
+    if(step>0){
+      document.getElementById('pi'+step).className='pi dn';
+      document.getElementById('pi'+step).textContent='✓';
+      document.getElementById('pl'+step).className='pl dn';
+    }
+    step++;
+    if(step<=5){
+      document.getElementById('pi'+step).className='pi act';
+      document.getElementById('pl'+step).className='pl act';
+    }
+    if(step>=3)clearInterval(si);
+  },680);
+  try {
+    const result=await apiFn();
+    [3,4,5].forEach((s,i)=>setTimeout(()=>{
+      document.getElementById('pi'+s).className='pi dn';
+      document.getElementById('pi'+s).textContent='✓';
+      document.getElementById('pl'+s).className='pl dn';
+    },i*380));
+    setTimeout(()=>{ ov.classList.remove('show'); onSuccess(result); },1300);
+  } catch(e) {
+    clearInterval(si);
+    ov.classList.remove('show');
+    showToast(e.message,'⚠️');
+    onErr(e);
+  }
+}
+
+// ── XRPL POLL ──
+async function pollXrpl() {
+  try {
+    const d=await api('GET','/xrpl/status');
+    if(d.connected) {
+      set('tk-ledger','#'+d.ledger.index);
+      const ind=document.getElementById('xrpl-ind');
+      if(ind){ind.style.color='#1C8B5E';}
+    }
+  } catch {}
+  if(userId && userData?.walletAddress &&
+     !userData.walletAddress.includes('Demo') &&
+     !userData.walletAddress.includes('XXXX')) {
+    try {
+      const w=await api('GET','/wallet/'+userId);
+      set('act-xrp',w.wallet.xrpBalance+' XRP (testnet)');
+    } catch {}
+  }
+}
+
+// ── TOAST ──
+function showToast(msg,ico) {
+  const el=document.getElementById('toastEl');
+  document.getElementById('t-ico').textContent=ico||'💰';
+  document.getElementById('t-txt').innerHTML=msg;
+  el.classList.add('show');
+  clearTimeout(window._t);
+  window._t=setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+// ── CLOCK + AUTO YIELD ──
+setInterval(()=>{
+  const now=new Date();
+  const s=document.getElementById('sbt'); if(s)s.textContent=now.toTimeString().substring(0,5);
+  const t=document.getElementById('tk-time'); if(t)t.textContent=now.toISOString().substring(11,19)+' UTC';
+},1000);
+
+// Poll balance + ledger every 15 seconds
+setInterval(()=>{
+  if(userId) {
+    api('GET','/balance/'+userId).then(d=>{
+      populateUI(d);
+      const bar=document.getElementById('today-bar');
+      if(bar){ const h=Math.min(60,parseInt(bar.style.height||'56')+1); bar.style.height=h+'px'; }
+    }).catch(()=>{});
+  }
+},15000);
+setInterval(pollXrpl,10000);
+
+// Init
+uD(); uW();
+</script>
+</body>
+</html>

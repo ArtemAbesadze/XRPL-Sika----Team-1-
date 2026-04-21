@@ -1,0 +1,21 @@
+{
+  "name": "sika-xrpl-savings",
+  "version": "1.0.0",
+  "description": "XRPL Savings Gateway — demo prototype",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "fund-wallet": "node backend/xrpl/fundTestnet.js",
+    "test-xrpl": "node backend/xrpl/testConnection.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0",
+    "xrpl": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
